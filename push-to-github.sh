@@ -132,8 +132,11 @@ if [ "$DRY_RUN" = 1 ]; then
   exit 0
 fi
 
-say "Creating github.com/$(gh api user --jq .login)/$REPO and pushing…"
-gh repo create "$REPO" --source=. --remote=origin --push "$VISIBILITY"
+OWNER="$(gh api user --jq .login)"
+say "Creating github.com/$OWNER/$REPO and pushing…"
+gh repo create "$REPO" --description "Northlight — a dignity-first app for people experiencing homelessness" "$VISIBILITY"
+git remote add origin "https://github.com/$OWNER/$REPO.git"
+git push -u origin "$BRANCH"
 
 say "Done: $(gh repo view "$REPO" --json url --jq .url 2>/dev/null || echo "https://github.com/$(gh api user --jq .login)/$REPO")"
 say "Anyone who clones it needs 'npm install', then 'npm run dev'."
